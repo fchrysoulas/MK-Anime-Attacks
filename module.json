@@ -1,12 +1,13 @@
 {
   "id": "anime-attacks",
-  "title": "Anime Attacks",
-  "description": "Moves attacker and target together with a dramatic zoom during attacks.",
-  "version": "1.0.0",
+  "title": "MK-Anime-Attacks",
+  "description": "Cinematic attack effects with local token stand-ins and optional camera zoom, without moving real tokens.",
+  "version": "1.0.1",
+  "url": "https://github.com/fchrysoulas/MK-Anime-Attacks",
   "compatibility": {
-    "minimum": 12,
-    "verified": 12,
-    "maximum": 12
+    "minimum": "12",
+    "verified": "12",
+    "maximum": "12"
   },
   "authors": [
     {
