@@ -1,0 +1,22 @@
+{
+  "id": "anime-attacks",
+  "title": "Anime Attacks",
+  "description": "Moves attacker and target together with a dramatic zoom during attacks.",
+  "version": "1.0.0",
+  "compatibility": {
+    "minimum": 12,
+    "verified": 12,
+    "maximum": 12
+  },
+  "authors": [
+    {
+      "name": "Fotis"
+    }
+  ],
+  "esmodules": [
+    "scripts/anime-attacks.js"
+  ],
+  "styles": [
+    "styles/anime-attacks.css"
+  ]
+}
