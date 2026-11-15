@@ -1,12 +1,12 @@
 # MK-Anime-Attacks
 
-Cinematic attack effects for **Foundry VTT v12**. Visible attacker and target images approach a clash point while the camera zooms, then return. Real token positions, vision, and world documents are never changed.
+Cinematic attack effects for **Foundry VTT v12, v13 and v14**. Visible attacker and target images approach a clash point while the camera zooms, then return. Real token positions, vision, and world documents are never changed.
 
 ## Installation
 
 This repository is private. Download `mk-anime-attacks.zip` from the [latest release](https://github.com/fchrysoulas/MK-Anime-Attacks/releases/latest) using your GitHub account and extract it into `Data/modules/anime-attacks/`. Alternatively, clone the repository and copy `module.json`, `scripts/`, and `styles/` into that folder. Restart Foundry and enable **MK-Anime-Attacks** in the world. Keep the `anime-attacks` folder name: it matches the existing module ID and preserves saved settings.
 
-There are no module dependencies. Compatibility remains limited to v12 until tested on newer Foundry versions.
+There are no module dependencies. The supported compatibility range is v12 through v14. The manifest keeps its existing verified version at v12: v13/v14 support has API review and automated regression coverage, but still needs live world validation, so Foundry may show an unverified-version warning.
 
 The update manifest is [module.json](https://github.com/fchrysoulas/MK-Anime-Attacks/releases/latest/download/module.json). Each manifest points to its exact release archive. Foundry requires publicly accessible manifest and download URLs for automatic installation and updates; these private GitHub assets require authentication, so use manual updates while the repository remains private.
 
@@ -22,7 +22,7 @@ Automatic detection uses structured metadata from:
 
 Ordinary chat, damage rolls, saving throws, item cards, and unsupported system rolls are ignored. For another system or a custom attack macro, add `flags["anime-attacks"].attack = true` to an actual roll message before creation, with a scene/token speaker and selected targets. Set it to `false` to suppress an effect. Target IDs are captured by the creating client; unflagged historical messages are not replayed.
 
-Settings control approach, hold and return durations, clash spacing, and zoom. Each user can disable animations or camera movement independently. The operating system's reduced-motion preference disables effects. Clicking or scrolling on the canvas, or pressing camera navigation keys, cancels active and queued effects and leaves the camera under user control. Scene teardown, participant movement/deletion, loss of visibility, or an animation error cleans up local stand-ins. Normal completion restores the camera.
+Settings control approach, hold and return durations, clash spacing, and zoom. Each user can disable animations or camera movement independently. The operating system's reduced-motion preference and Foundry's photosensitive mode disable effects. On v14, both participants must be located in the viewed scene level. Clicking or scrolling on the canvas, or pressing camera navigation keys, cancels active and queued effects and leaves the camera under user control. Scene teardown, a v14 scene-level change, participant movement/deletion, loss of visibility, or an animation error cleans up local stand-ins. Normal completion restores the camera.
 
 The local queue holds up to 20 waiting messages; further effects are skipped until space is available. Concurrent clients animate independently, so frame timing may differ. Stand-ins preserve the token texture, dimensions, mirroring, rotation, tint and opacity; external shader effects, labels and bars are not copied.
 
@@ -35,4 +35,4 @@ npm run check
 npm test
 ```
 
-Automated tests use mocked Foundry/PIXI objects. Before release, test in a live v12 world with a GM and player: public/private/blind rolls, multiple targets, rapid attacks, a large token, camera input, and switching scenes during the effect. Automated tests do not establish live system compatibility.
+Automated tests use mocked Foundry/PIXI objects. Before treating a Foundry version as verified, test a live v12, v13 or v14 world with a GM and player: public/private/blind rolls, multiple targets, rapid attacks, a large token, camera input, switching scenes during the effect, and switching scene levels in v14. Automated tests do not establish live system compatibility.

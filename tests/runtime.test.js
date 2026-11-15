@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 let fixtureNumber = 0;
 
 async function fixture(options = {}) {
+  const generation = options.generation ?? 12;
   const hooks = new Map();
   const settings = new Map();
   const frames = new Map();
@@ -55,6 +56,12 @@ async function fixture(options = {}) {
   const target2 = makeToken("target2", 1500);
   const tokens = new Map([attacker, target, target2].map(token => [token.document.id, token]));
   user.targets.add(target);
+  if (generation >= 14) {
+    for (const token of tokens.values()) {
+      token.document.levelId = "ground";
+      token.document.locatedInLevel = level => token.document.levelId === level.id;
+    }
+  }
   const stage = new Container();
   stage.pivot = { x: 400, y: 300 };
   stage.scale = { x: 1 };
@@ -63,7 +70,9 @@ async function fixture(options = {}) {
     removeEventListener: (name, callback) => { if (listeners.get(name) === callback) listeners.delete(name); }
   };
   const canvas = {
-    ready: true, scene, stage, app: { view }, grid: { size: 100 },
+    ready: true, scene, stage, app: options.canvasElement ? { canvas: view } : { view }, grid: { size: 100 },
+    level: generation >= 14 ? { id: "ground" } : undefined,
+    photosensitiveMode: options.photosensitive ?? false,
     tokens: { get: id => tokens.get(id) },
     pan: position => {
       if (options.failPan) throw Error("Camera failed");
@@ -73,7 +82,7 @@ async function fixture(options = {}) {
     }
   };
   const game = {
-    user, users: new Map([[user.id, user]]), system: { id: "dnd5e" },
+    user, users: new Map([[user.id, user]]), system: { id: "dnd5e" }, release: { generation },
     settings: { register: (module, key, config) => settings.set(key, config.default), get: (module, key) => settings.get(key) }
   };
   const globalNames = ["Hooks", "game", "canvas", "PIXI", "requestAnimationFrame", "cancelAnimationFrame", "matchMedia", "addEventListener", "removeEventListener"];
@@ -102,7 +111,8 @@ async function fixture(options = {}) {
     await flush();
   };
   const message = (id = "message") => ({
-    id, user, visible: true, isContentVisible: true, isRoll: true,
+    id, ...(generation >= 13 ? { author: user } : { user }),
+    visible: true, isContentVisible: true, isRoll: true,
     speaker: { scene: "scene", token: "attacker" },
     flags: { dnd5e: { roll: { type: "attack" } } },
     updateSource(update) {
@@ -418,5 +428,82 @@ test("a viewing GM plays one effect and does not require a separate coordinator"
   assert.equal(f.sprites.length, 2);
   await f.advance(1600);
   await done;
+  assert.equal(f.frames.size, 0);
+});
+
+for (const generation of [12, 13, 14]) {
+  test('Foundry v' + generation + ' API-shaped fixture completes a local cinematic', async t => {
+    const f = await fixture({ generation });
+    t.after(f.restore);
+    const message = f.prepare();
+    if (generation >= 13) {
+      Object.defineProperty(message, 'user', { get() { throw Error('Legacy user accessor read'); } });
+    }
+    const done = f.play(message);
+    assert.equal(f.sprites.length, 2);
+    await f.advance(500);
+    assert.equal(f.sprites[0].position.x, 500);
+    await f.advance(1100);
+    await done;
+    assert.equal(f.attacker.mesh.renderable, true);
+    assert.equal(f.canvas.stage.children.length, 0);
+    assert.deepEqual(f.pans.at(-1), { x: 400, y: 300, scale: 1 });
+    assert.equal(f.listeners.size, 0);
+  });
+}
+
+test('v14 level changes cancel active and queued effects without restoring the old camera', async t => {
+  const f = await fixture({ generation: 14 });
+  t.after(f.restore);
+  f.user.targets.add(f.target2);
+  const done = f.play(f.prepare(f.message('first')));
+  await f.play(f.prepare(f.message('second')));
+  await f.advance(250);
+  const panCount = f.pans.length;
+  f.canvas.level = { id: 'upper' };
+  await f.advance(1);
+  await done;
+  assert.equal(f.sprites.length, 2);
+  assert.equal(f.pans.length, panCount);
+  assert.equal(f.attacker.mesh.renderable, true);
+  assert.equal(f.canvas.stage.children.length, 0);
+  assert.equal(f.frames.size, 0);
+});
+
+test('visible v14 tokens located on another level do not create stand-ins', async t => {
+  const f = await fixture({ generation: 14 });
+  t.after(f.restore);
+  f.target.document.levelId = 'upper';
+  await f.play(f.prepare());
+  assert.equal(f.sprites.length, 0);
+});
+
+for (const property of ['elevation', 'levels']) {
+  test('v14 participant ' + property + ' changes cancel the effect', async t => {
+    const f = await fixture({ generation: 14 });
+    t.after(f.restore);
+    const done = f.play(f.prepare());
+    f.hooks.get('updateToken')(f.target.document, { [property]: property === 'levels' ? ['upper'] : 100 });
+    await done;
+    assert.equal(f.target.mesh.renderable, true);
+    assert.equal(f.frames.size, 0);
+  });
+}
+
+test('Foundry photosensitive mode disables cinematic effects', async t => {
+  const f = await fixture({ generation: 13, photosensitive: true });
+  t.after(f.restore);
+  await f.play(f.prepare());
+  assert.equal(f.sprites.length, 0);
+});
+
+test('canvas element accessor works when app.view is unavailable', async t => {
+  const f = await fixture({ generation: 14, canvasElement: true });
+  t.after(f.restore);
+  const done = f.play(f.prepare());
+  assert.equal(f.sprites.length, 2);
+  await f.advance(1600);
+  await done;
+  assert.equal(f.listeners.size, 0);
   assert.equal(f.frames.size, 0);
 });

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.3
+
+- Extend the declared compatibility range through Foundry v14, retaining v12 support.
+- Cancel v14 effects safely when the viewed scene level changes, and skip off-level tokens.
+- Cancel effects when participant elevation or level membership changes.
+- Respect Foundry photosensitive mode and accept either canvas element accessor.
+- Add v12/v13/v14 API-shaped regression coverage; live v13/v14 validation is still pending.
+
 ## 1.0.2
 
 - Add a stable Foundry update manifest URL and a versioned module download URL.

@@ -63,7 +63,7 @@ Hooks.on("canvasTearDown", () => {
 });
 Hooks.on("deleteToken", document => cancelForToken(document));
 Hooks.on("updateToken", (document, changes) => {
-  if (["x", "y", "width", "height", "rotation", "texture", "hidden", "alpha"].some(key => key in changes)) {
+  if (["x", "y", "width", "height", "rotation", "texture", "hidden", "alpha", "elevation", "levels"].some(key => key in changes)) {
     cancelForToken(document);
   }
 });
@@ -75,6 +75,7 @@ function cancelForToken(document) {
 function clientEnabled() {
   return game.settings.get(MODULE_ID, "enabled")
     && game.settings.get(MODULE_ID, "clientEnabled")
+    && !canvas.photosensitiveMode
     && !globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 }
 
@@ -103,16 +104,18 @@ async function enqueueMessage(message, options, userId) {
   }
   seenMessages.add(message.id);
   if (seenMessages.size > 1000) seenMessages.delete(seenMessages.values().next().value);
-  queue.push({ message, userId });
+  queue.push({ message, userId, scene: canvas.scene, level: canvas.level });
   if (draining) return;
   draining = true;
   try {
     while (queue.length) {
       const next = queue.shift();
-      if (!messageEligible(next.message, next.userId)) continue;
+      if (canvas.scene !== next.scene || canvas.level !== next.level
+        || !messageEligible(next.message, next.userId)) continue;
       const flags = next.message.flags[MODULE_ID];
       for (const targetId of new Set(flags.targetIds)) {
-        if (!messageEligible(next.message, next.userId)) break;
+        if (canvas.scene !== next.scene || canvas.level !== next.level
+          || !messageEligible(next.message, next.userId)) break;
         if (typeof targetId !== "string" || targetId === flags.attackerId) continue;
         const attacker = canvas.tokens.get(flags.attackerId);
         const target = canvas.tokens.get(targetId);
@@ -129,6 +132,9 @@ async function enqueueMessage(message, options, userId) {
 }
 
 function visibleToken(token, allowSuppressed = false) {
+  // v14 can display tokens from another level. Animate only the viewed floor.
+  if (canvas.level && token?.document?.locatedInLevel
+    && !token.document.locatedInLevel(canvas.level)) return false;
   return Boolean(token?.isVisible && !token.destroyed && token.mesh?.visible
     && !token.mesh.destroyed && token.mesh.texture?.valid
     && (allowSuppressed || token.mesh.renderable !== false));
@@ -137,6 +143,8 @@ function visibleToken(token, allowSuppressed = false) {
 async function runAnimeAttackAnimation(attacker, target, message) {
   const scene = canvas.scene;
   const stage = canvas.stage;
+  const level = canvas.level;
+  const sameView = () => canvas.scene === scene && canvas.stage === stage && canvas.level === level;
   const settings = sanitizeSettings(Object.fromEntries([
     "moveDuration", "holdDuration", "returnDuration", "zoomScale", "approachDistance"
   ].map(key => [key, game.settings.get(MODULE_ID, key)])));
@@ -145,7 +153,7 @@ async function runAnimeAttackAnimation(attacker, target, message) {
   const originalView = { x: stage.pivot.x, y: stage.pivot.y, scale: stage.scale.x };
   const zoomView = { ...clash.midpoint, scale: settings.zoomScale };
   const cameraEnabled = game.settings.get(MODULE_ID, "cameraEnabled");
-  const view = canvas.app.view;
+  const view = canvas.app.canvas ?? canvas.app.view;
   const participants = [];
   let overlay;
   let frameId;
@@ -172,7 +180,7 @@ async function runAnimeAttackAnimation(attacker, target, message) {
         // Textures belong to Foundry; never destroy them with the stand-ins.
         cleanup(() => overlay.destroy({ children: true, texture: false, baseTexture: false }));
       }
-      if (restoreView && cameraEnabled && canvas.ready && canvas.scene === scene && canvas.stage === stage) {
+      if (restoreView && cameraEnabled && canvas.ready && sameView()) {
         cleanup(() => canvas.pan(originalView));
       }
       activeAnimation = null;
@@ -223,7 +231,7 @@ async function runAnimeAttackAnimation(attacker, target, message) {
       const frame = now => {
         if (finished) return;
         try {
-          if (canvas.scene !== scene || canvas.stage !== stage || !messageEligible(message)
+          if (!sameView() || !messageEligible(message)
             || participants.some(({ token, mesh }) => token.mesh !== mesh || !visibleToken(token, true))) {
             finish();
             return;
