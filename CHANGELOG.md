@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4
+
+- Require Foundry v13 or newer, with v14 as the maximum supported version.
+- Remove the obsolete v12 verified marker; live v13/v14 verification remains pending.
+
 ## 1.0.3
 
 - Extend the declared compatibility range through Foundry v14, retaining v12 support.

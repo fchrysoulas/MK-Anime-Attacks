@@ -1,9 +1,9 @@
 {
   "name": "mk-anime-attacks",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "type": "module",
-  "description": "Cinematic attack effects for Foundry VTT v12-v14",
+  "description": "Cinematic attack effects for Foundry VTT v13-v14",
   "scripts": {
     "check": "node --check scripts/anime-attacks.js && node --check scripts/core.js",
     "test": "node --test"

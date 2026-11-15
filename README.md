@@ -1,12 +1,12 @@
 # MK-Anime-Attacks
 
-Cinematic attack effects for **Foundry VTT v12, v13 and v14**. Visible attacker and target images approach a clash point while the camera zooms, then return. Real token positions, vision, and world documents are never changed.
+Cinematic attack effects for **Foundry VTT v13 and v14**. Visible attacker and target images approach a clash point while the camera zooms, then return. Real token positions, vision, and world documents are never changed.
 
 ## Installation
 
 This repository is private. Download `mk-anime-attacks.zip` from the [latest release](https://github.com/fchrysoulas/MK-Anime-Attacks/releases/latest) using your GitHub account and extract it into `Data/modules/anime-attacks/`. Alternatively, clone the repository and copy `module.json`, `scripts/`, and `styles/` into that folder. Restart Foundry and enable **MK-Anime-Attacks** in the world. Keep the `anime-attacks` folder name: it matches the existing module ID and preserves saved settings.
 
-There are no module dependencies. The supported compatibility range is v12 through v14. The manifest keeps its existing verified version at v12: v13/v14 support has API review and automated regression coverage, but still needs live world validation, so Foundry may show an unverified-version warning.
+There are no module dependencies. The supported compatibility range is v13 through v14. Compatibility has API review and automated regression coverage, but still needs live world validation. No version is marked verified yet, so Foundry may show an unverified-version warning.
 
 The update manifest is [module.json](https://github.com/fchrysoulas/MK-Anime-Attacks/releases/latest/download/module.json). Each manifest points to its exact release archive. Foundry requires publicly accessible manifest and download URLs for automatic installation and updates; these private GitHub assets require authentication, so use manual updates while the repository remains private.
 
@@ -35,4 +35,4 @@ npm run check
 npm test
 ```
 
-Automated tests use mocked Foundry/PIXI objects. Before treating a Foundry version as verified, test a live v12, v13 or v14 world with a GM and player: public/private/blind rolls, multiple targets, rapid attacks, a large token, camera input, switching scenes during the effect, and switching scene levels in v14. Automated tests do not establish live system compatibility.
+Automated tests use mocked Foundry/PIXI objects. Before treating a Foundry version as verified, test a live v13 or v14 world with a GM and player: public/private/blind rolls, multiple targets, rapid attacks, a large token, camera input, switching scenes during the effect, and switching scene levels in v14. Automated tests do not establish live system compatibility.
