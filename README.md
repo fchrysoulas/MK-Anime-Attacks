@@ -6,7 +6,7 @@ Cinematic attack effects for **Foundry VTT v13 and v14**. Visible attacker and t
 
 This repository is private. Download `mk-anime-attacks.zip` from the [latest release](https://github.com/fchrysoulas/MK-Anime-Attacks/releases/latest) using your GitHub account and extract it into `Data/modules/anime-attacks/`. Alternatively, clone the repository and copy `module.json`, `scripts/`, and `styles/` into that folder. Restart Foundry and enable **MK-Anime-Attacks** in the world. Keep the `anime-attacks` folder name: it matches the existing module ID and preserves saved settings.
 
-There are no module dependencies. The supported compatibility range is v13 through v14. Compatibility has API review and automated regression coverage, but still needs live world validation. No version is marked verified yet. Foundry v14 classifies a missing compatibility.verified field as Compatibility Unknown and displays the red crossed-file badge beside the package version. Minimum and maximum define the supported range; they do not establish verification.
+There are no module dependencies. The supported compatibility range is v13 through v14, and the manifest declares v14 verified. API review, automated regression coverage and Foundry package-compatibility checks are available; full live GM/player gameplay validation is still pending.
 
 The update manifest is [module.json](https://github.com/fchrysoulas/MK-Anime-Attacks/releases/latest/download/module.json). Each manifest points to its exact release archive. Foundry requires publicly accessible manifest and download URLs for automatic installation and updates; these private GitHub assets require authentication, so use manual updates while the repository remains private.
 

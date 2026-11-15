@@ -39,8 +39,8 @@
 - Foundry v14.370 returns availability `UNKNOWN` when `compatibility.verified` is absent, even with a valid minimum/maximum range. Its package UI renders a red crossed-file badge with the tooltip **Compatibility Unknown**.
 - This exact behavior was reproduced with the installed Foundry availability and badge functions against the matching repository and installed v1.0.4 manifests.
 - In the same v14 calculation, a verified value of `13` produces a compatibility-risk warning; `14` produces a success badge. These comparisons are metadata checks, not evidence that either runtime was tested.
-- Only set `compatibility.verified` to a core version after actual live validation. Do not restore the obsolete v12 marker or set v14 merely to change the badge color.
-- Before marking a core version verified, exercise GM/player clients, public/private/blind rolls, supported system attack detection, multiple targets, rapid attacks, camera cancellation, token changes, scene changes and v14 level changes. Report any unavailable checks.
+- The user explicitly requested `compatibility.verified: "14"` for v1.0.5. Preserve that declared value with minimum v13 and maximum v14. This metadata decision does not establish live gameplay validation; report validation status separately.
+- Before declaring any additional core version verified, exercise GM/player clients, public/private/blind rolls, supported system attack detection, multiple targets, rapid attacks, camera cancellation, token changes, scene changes and v14 level changes. Report any unavailable checks.
 
 ## Releases and local deployment
 

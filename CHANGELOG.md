@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5
+
+- Declare Foundry v14 verified while retaining minimum v13 and maximum v14.
+- Refresh release and local installation metadata. Full live gameplay validation remains pending.
+
 ## 1.0.4
 
 - Require Foundry v13 or newer, with v14 as the maximum supported version.
