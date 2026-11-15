@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+
+- Add a stable Foundry update manifest URL and a versioned module download URL.
+- Publish a release manifest and installable module archive.
+
 ## 1.0.1
 
 - Filter chat using attack metadata, with an explicit opt-in for custom roll macros.

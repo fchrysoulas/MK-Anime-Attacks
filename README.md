@@ -4,9 +4,11 @@ Cinematic attack effects for **Foundry VTT v12**. Visible attacker and target im
 
 ## Installation
 
-This repository is private. Download or clone it using your GitHub account, then copy `module.json`, `scripts/`, and `styles/` into `Data/modules/anime-attacks/`. Restart Foundry and enable **MK-Anime-Attacks** in the world. Keep the `anime-attacks` folder name: it matches the existing module ID and preserves saved settings.
+This repository is private. Download `mk-anime-attacks.zip` from the [latest release](https://github.com/fchrysoulas/MK-Anime-Attacks/releases/latest) using your GitHub account and extract it into `Data/modules/anime-attacks/`. Alternatively, clone the repository and copy `module.json`, `scripts/`, and `styles/` into that folder. Restart Foundry and enable **MK-Anime-Attacks** in the world. Keep the `anime-attacks` folder name: it matches the existing module ID and preserves saved settings.
 
-There are no module dependencies. Compatibility remains limited to v12 until tested on newer Foundry versions. Private GitHub raw links are not anonymous Foundry installation URLs.
+There are no module dependencies. Compatibility remains limited to v12 until tested on newer Foundry versions.
+
+The update manifest is [module.json](https://github.com/fchrysoulas/MK-Anime-Attacks/releases/latest/download/module.json). Each manifest points to its exact release archive. Foundry requires publicly accessible manifest and download URLs for automatic installation and updates; these private GitHub assets require authentication, so use manual updates while the repository remains private.
 
 ## Use
 
